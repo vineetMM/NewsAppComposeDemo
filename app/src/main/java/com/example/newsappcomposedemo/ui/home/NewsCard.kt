@@ -2,10 +2,13 @@ package com.example.newsappcomposedemo.ui.home
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -43,6 +46,7 @@ import coil.compose.rememberImagePainter
 import com.example.newsappcomposedemo.model.Articles
 import com.example.newsappcomposedemo.ui.theme.NewsAppComposeDemoTheme
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun NewsCard(articles: Articles) {
   var expandedState by remember {
@@ -59,12 +63,6 @@ fun NewsCard(articles: Articles) {
       .padding(8.dp)
       .fillMaxWidth()
       .wrapContentHeight()
-      .animateContentSize(
-        animationSpec = tween(
-          durationMillis = 300,
-          easing = LinearOutSlowInEasing
-        )
-      )
       .clickable {
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(articles.url))
         startActivity(context, browserIntent, null)
@@ -97,7 +95,15 @@ fun NewsCard(articles: Articles) {
           Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = "Drop-Down")
         }
       }
-      if (expandedState) {
+      AnimatedVisibility(
+        visible = expandedState,
+        enter = expandVertically(
+          animationSpec = tween(durationMillis = 300, easing = FastOutLinearInEasing)
+        ),
+        exit = shrinkVertically(
+          animationSpec = tween(durationMillis = 300, easing = FastOutLinearInEasing)
+        )
+      ) {
         Text(
           text = articles.description ?: "No data found",
           modifier = Modifier.padding(8.dp, 0.dp, 8.dp, 8.dp)

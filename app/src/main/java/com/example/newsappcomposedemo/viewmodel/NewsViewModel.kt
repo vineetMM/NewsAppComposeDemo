@@ -17,7 +17,7 @@ class NewsViewModel @Inject constructor(
 ) : ViewModel() {
 
   var newsList = MutableStateFlow<NewsViewState>(NewsViewState.Loading)
-    private set
+  private set
 
   init {
     getNews()
