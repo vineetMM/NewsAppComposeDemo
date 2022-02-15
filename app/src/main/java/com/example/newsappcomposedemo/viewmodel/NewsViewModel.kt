@@ -2,9 +2,10 @@ package com.example.newsappcomposedemo.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.newsappcomposedemo.data.repository.NewsRepository
+import com.example.domain.common.SafeResult
+import com.example.domain.usecases.GetTopNewsUseCase
 import com.example.newsappcomposedemo.model.Articles
-import com.example.newsappcomposedemo.util.SafeResult
+import com.example.newsappcomposedemo.model.UIArticleMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,21 +14,23 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewsViewModel @Inject constructor(
-  private val newsRepository: NewsRepository
+  private val useCaseGetTopNews: GetTopNewsUseCase,
+  private val uiArticleMapper: UIArticleMapper
 ) : ViewModel() {
 
   var newsList = MutableStateFlow<NewsViewState>(NewsViewState.Loading)
-  private set
+    private set
 
   init {
     getNews()
   }
 
   private fun getNews() = viewModelScope.launch(Dispatchers.IO) {
-    when (val result = newsRepository.getTopArticles()) {
+    when (val result = useCaseGetTopNews()) {
       is SafeResult.Success -> {
-        result.data.body()?.let { safeResult ->
-          newsList.value = NewsViewState.ShowNews(safeResult.articles)
+        result.data.let { safeResult ->
+          newsList.value =
+            NewsViewState.ShowNews(safeResult.map { uiArticleMapper.mapToPresentation(it) })
         }
       }
       is SafeResult.Failure -> {
