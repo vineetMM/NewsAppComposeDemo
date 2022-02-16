@@ -19,7 +19,7 @@ android {
   }
 
   buildTypes {
-    debug{
+    debug {
       buildConfigField("String", "API_KEY", "\"" + localProperties['apiKey'] + "\"")
     }
     release {
@@ -59,7 +59,7 @@ dependencies {
   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
 
   //Room db
-  def  room_version = '2.4.1'
+  def room_version = '2.4.1'
   implementation "androidx.room:room-runtime:$room_version"
   implementation "androidx.room:room-ktx:$room_version"
   kapt "androidx.room:room-compiler:$room_version"
