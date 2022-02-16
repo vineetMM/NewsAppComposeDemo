@@ -1,5 +1,6 @@
 package com.example.data.common
 
+import com.example.data.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject
@@ -11,7 +12,7 @@ class APIKeyInterceptor @Inject constructor() : Interceptor {
   override fun intercept(chain: Interceptor.Chain): Response {
     val original = chain.request()
 
-    val key = "7bc3421e6c7d4acb86d8ced2e8f4bf67"
+    val key = BuildConfig.API_KEY
 
     val request = original.newBuilder()
       .addHeader(
