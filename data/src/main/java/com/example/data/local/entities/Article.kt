@@ -4,9 +4,11 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.data.model.Source
+import com.example.data.model.toDOMSource
+import com.example.domain.model.DOMArticle
 
 @Entity(tableName = "articles")
-data class Articles(
+data class Article(
 
   @Embedded(prefix = "source_") val source: Source?,
   val author: String?,
@@ -17,5 +19,13 @@ data class Articles(
   val urlToImage: String?,
   val publishedAt: String?,
   val content: String?,
-  var isSaved: Boolean = true
 )
+
+fun Article.toDOMArticle(): DOMArticle {
+  return DOMArticle(
+    this.source?.toDOMSource(), this.author, this.title, this.description, this.url,
+    this.urlToImage,
+    this.publishedAt,
+    this.content
+  )
+}

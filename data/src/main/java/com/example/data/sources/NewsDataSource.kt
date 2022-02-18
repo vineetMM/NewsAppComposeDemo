@@ -16,4 +16,16 @@ class NewsDataSource(
       newsService.getTopArticles(country)
     }
   }
+
+  override suspend fun fetchTopArticlesPaging(
+    page: Int,
+    country: String,
+    perPage: Int
+  ): SafeResult<NewsApiResponse> {
+    return safeApiCall(dispatcher) {
+      newsService.getTopArticlesPaging(
+        page, country, perPage
+      )
+    }
+  }
 }

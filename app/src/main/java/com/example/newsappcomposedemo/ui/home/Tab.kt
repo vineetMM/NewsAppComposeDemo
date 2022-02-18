@@ -86,7 +86,7 @@ fun TabsContent(
     when (page) {
       0 -> Categories()
       1 -> NewsList(viewModel)
-      2 -> NewsList(viewModel)
+      2 -> NewsListPaging(viewModel)
     }
   }
 }

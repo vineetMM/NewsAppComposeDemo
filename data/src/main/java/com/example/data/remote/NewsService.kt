@@ -11,4 +11,11 @@ interface NewsService {
   suspend fun getTopArticles(
     @Query("country") country: String,
   ): NewsApiResponse
+
+  @GET(Constants.TOP_HEADLINE)
+  suspend fun getTopArticlesPaging(
+    @Query("page") page: Int,
+    @Query("country") country: String,
+    @Query("pageSize") pageSize: Int
+  ): NewsApiResponse
 }
