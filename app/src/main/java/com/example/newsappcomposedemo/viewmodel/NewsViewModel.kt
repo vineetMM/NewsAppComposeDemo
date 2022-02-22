@@ -2,13 +2,12 @@ package com.example.newsappcomposedemo.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import androidx.paging.map
 import com.example.domain.common.SafeResult
 import com.example.domain.usecases.GetTopNewsPagingUseCase
 import com.example.domain.usecases.GetTopNewsUseCase
-import com.example.newsappcomposedemo.model.Articles
+import com.example.newsappcomposedemo.model.ArticleUI
 import com.example.newsappcomposedemo.model.UIArticleMapper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +27,11 @@ class NewsViewModel @Inject constructor(
   var newsList = MutableStateFlow<NewsViewState>(NewsViewState.Loading)
     private set
 
-  var newsListPaging = MutableStateFlow<NewsViewStatePaging>(NewsViewStatePaging.Loading)
+  val newsPaged: Flow<PagingData<ArticleUI>> = useCaseGetTopNewsPaging().map { pagingData ->
+    pagingData.map {
+      uiArticleMapper.mapToPresentation(it)
+    }
+  }
 
   init {
     getNews()
@@ -51,23 +54,9 @@ class NewsViewModel @Inject constructor(
     }
   }
 
-  @ExperimentalPagingApi
-  fun getPagingNews() = viewModelScope.launch(Dispatchers.IO) {
-    newsListPaging.value =
-      NewsViewStatePaging.ShowNews(useCaseGetTopNewsPaging().map { pagingData ->
-        pagingData.map { uiArticleMapper.mapToPresentation(it) }
-      })
-  }
-
   sealed class NewsViewState {
     object Loading : NewsViewState()
-    class ShowNews(val news: List<Articles>) : NewsViewState()
+    class ShowNews(val news: List<ArticleUI>) : NewsViewState()
     class Error(val message: String) : NewsViewState()
-  }
-
-  sealed class NewsViewStatePaging {
-    object Loading : NewsViewStatePaging()
-    class ShowNews(val news: Flow<PagingData<Articles>>) : NewsViewStatePaging()
-    class Error(val message: String) : NewsViewStatePaging()
   }
 }

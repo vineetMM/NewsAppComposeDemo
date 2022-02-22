@@ -2,6 +2,7 @@ package com.example.data.paging
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
+import androidx.paging.LoadType.REFRESH
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
@@ -10,13 +11,12 @@ import com.example.data.local.AppDatabase
 import com.example.data.local.entities.Article
 import com.example.data.local.entities.PageKey
 import com.example.data.model.toDBArticle
-import com.example.data.sources.INewsDataSource
-import com.example.domain.common.SafeResult
+import com.example.data.remote.NewsService
 import javax.inject.Inject
 
 @ExperimentalPagingApi
 class NewsRemoteMediator @Inject constructor(
-  private val newsDataSource: INewsDataSource,
+  private val newsApi: NewsService,
   private val newsDatabase: AppDatabase
 ) : RemoteMediator<Int, Article>() {
   private val articlesDao = newsDatabase.getArticlesDao()
@@ -48,25 +48,21 @@ class NewsRemoteMediator @Inject constructor(
           nextPage
         }
       }
-      val response = newsDataSource.fetchTopArticlesPaging(
-        page = currentPage, perPage = PAGE_SIZE, country = "in"
+      val response = newsApi.getTopArticlesPaging(
+        page = currentPage, pageSize = PAGE_SIZE, country = "in"
       )
-      val endOfPaginationReached = when (response) {
-        is SafeResult.Success -> response.data.articles.isEmpty()
-        else -> {
-          throw RuntimeException()
-        }
-      }
+
+      val endOfPaginationReached = response.articles.isEmpty()
 
       val prevPage = if (currentPage == 1) null else currentPage - 1
       val nextPage = if (endOfPaginationReached) null else currentPage + 1
 
       newsDatabase.withTransaction {
-        if (loadType == LoadType.REFRESH) {
+        if (loadType == REFRESH) {
           articlesDao.deleteAllArticles()
           pageKeyDao.clearAllKeys()
         }
-        val keys = response.data.articles.map { article ->
+        val keys = response.articles.map { article ->
           PageKey(
             url = article.url,
             prevPage = prevPage,
@@ -74,7 +70,7 @@ class NewsRemoteMediator @Inject constructor(
           )
         }
         pageKeyDao.insertAllKeys(pageKeys = keys)
-        articlesDao.insertAllArticles(articles = response.data.articles.map { it.toDBArticle() })
+        articlesDao.insertAllArticles(articles = response.articles.map { it.toDBArticle() })
       }
       MediatorResult.Success(
         endOfPaginationReached = endOfPaginationReached

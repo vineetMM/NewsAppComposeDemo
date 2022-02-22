@@ -1,6 +1,6 @@
 package com.example.newsappcomposedemo.model
 
-data class Source(
+data class SourceUI(
   val id: String?,
   val name: String?
 )

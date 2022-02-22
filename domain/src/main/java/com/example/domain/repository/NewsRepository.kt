@@ -1,6 +1,5 @@
 package com.example.domain.repository
 
-import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingData
 import com.example.domain.common.SafeResult
 import com.example.domain.model.DOMArticle
@@ -11,6 +10,5 @@ interface NewsRepository {
 
   suspend fun getTopArticles(): SafeResult<DOMArticleList>
 
-  @ExperimentalPagingApi
-  suspend fun getTopArticlesPaging(): Flow<PagingData<DOMArticle>>
+  fun getTopArticlesPaging(): Flow<PagingData<DOMArticle>>
 }
