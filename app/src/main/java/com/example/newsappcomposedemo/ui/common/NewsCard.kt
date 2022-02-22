@@ -1,4 +1,4 @@
-package com.example.newsappcomposedemo.ui.home
+package com.example.newsappcomposedemo.ui.common
 
 import android.content.Intent
 import android.net.Uri
@@ -43,12 +43,12 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
-import com.example.newsappcomposedemo.model.Articles
+import com.example.newsappcomposedemo.model.ArticleUI
 import com.example.newsappcomposedemo.ui.theme.NewsAppComposeDemoTheme
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun NewsCard(articles: Articles) {
+fun NewsCard(articleUI: ArticleUI) {
   var expandedState by remember {
     mutableStateOf(false)
   }
@@ -64,7 +64,7 @@ fun NewsCard(articles: Articles) {
       .fillMaxWidth()
       .wrapContentHeight()
       .clickable {
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(articles.url))
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(articleUI.url))
         startActivity(context, browserIntent, null)
       },
     shape = MaterialTheme.shapes.medium,
@@ -75,11 +75,11 @@ fun NewsCard(articles: Articles) {
     Column(
       verticalArrangement = Arrangement.Center,
     ) {
-      NewsImage(articles = articles)
+      NewsImage(articleUI = articleUI)
 
       Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
-          text = articles.title ?: "No data found", fontWeight = FontWeight.Bold,
+          text = articleUI.title ?: "No data found", fontWeight = FontWeight.Bold,
           modifier = Modifier
             .padding(8.dp, 8.dp, 0.dp, 4.dp)
             .weight(6f)
@@ -105,7 +105,7 @@ fun NewsCard(articles: Articles) {
         )
       ) {
         Text(
-          text = articles.description ?: "No data found",
+          text = articleUI.description ?: "No data found",
           modifier = Modifier.padding(8.dp, 0.dp, 8.dp, 8.dp)
         )
       }
@@ -115,9 +115,9 @@ fun NewsCard(articles: Articles) {
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-fun NewsImage(articles: Articles) {
+fun NewsImage(articleUI: ArticleUI) {
   Image(
-    painter = rememberImagePainter(articles.urlToImage),
+    painter = rememberImagePainter(articleUI.urlToImage),
     contentDescription = null,
     modifier = Modifier
       .fillMaxWidth()
@@ -129,7 +129,7 @@ fun NewsImage(articles: Articles) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewCard() {
-  val articles = Articles(
+  val articles = ArticleUI(
     null, "author",
     "ABC Suspends Whoopi Goldberg Over Holocaust Comments - The New York Times",
     "Ms. Goldberg’s comments, on Monday’s episode of “The View,” came amid growing ignorance about the Holocaust and rising antisemitism. She has apologized.",

@@ -8,12 +8,9 @@ plugins {
 
 ext {
     coroutinesVersion = '1.4.3'
-    retrofitVersion = "2.9.0"
     lifeCycleVersion = '2.2.0'
-    daggerHiltVersion = '2.31.2-alpha'
+    daggerHiltVersion = '2.40.5'
     hiltLifeCycleVersion = '1.0.0-alpha03'
-    coilVersion = '1.2.2'
-    nav_version = '2.3.5'
 }
 
 
@@ -74,11 +71,15 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
 
+    // Compose Navigation
+    implementation "androidx.navigation:navigation-compose:2.5.0-alpha02"
+
     //hilt -DI
-    implementation "com.google.dagger:hilt-android:2.40.5"
-    kapt "com.google.dagger:hilt-compiler:2.40.5"
+    implementation "com.google.dagger:hilt-android:$daggerHiltVersion"
+    kapt "com.google.dagger:hilt-compiler:$daggerHiltVersion"
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hiltLifeCycleVersion"
     kapt "androidx.hilt:hilt-compiler:1.0.0"
+    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
 
 
     //Coroutines
@@ -89,13 +90,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:$lifeCycleVersion"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifeCycleVersion"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.1"
-
-    //Retrofit
-    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
-    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
-    implementation "com.squareup.okhttp3:logging-interceptor:4.9.1"
-    implementation "com.squareup.retrofit2:converter-scalars:$retrofitVersion"
 
     //for image rendering
     implementation "io.coil-kt:coil-compose:1.4.0"
@@ -106,6 +100,9 @@ dependencies {
 
     implementation "com.google.accompanist:accompanist-pager:0.13.0"
     implementation "com.google.accompanist:accompanist-pager-indicators:0.13.0"
+
+    // Paging 3.0
+    implementation 'androidx.paging:paging-compose:1.0.0-alpha14'
 
 
 }

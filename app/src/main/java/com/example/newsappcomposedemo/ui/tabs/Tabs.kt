@@ -1,4 +1,4 @@
-package com.example.newsappcomposedemo.ui.home
+package com.example.newsappcomposedemo.ui.tabs
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -13,6 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.newsappcomposedemo.ui.categories.Categories
+import com.example.newsappcomposedemo.ui.news.NewsList
+import com.example.newsappcomposedemo.ui.news.NewsListPaging
 import com.example.newsappcomposedemo.viewmodel.NewsViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -85,8 +87,8 @@ fun TabsContent(
   HorizontalPager(state = pagerState) { page ->
     when (page) {
       0 -> Categories()
-      1 -> NewsList(viewModel)
-      2 -> NewsList(viewModel)
+      1 -> NewsListPaging(newsViewModel = viewModel)
+      2 -> NewsList(newsViewModel = viewModel)
     }
   }
 }
